@@ -3,7 +3,7 @@ from flask_restful import Resource
 from datetime import date
 from datetime import timedelta
 import requests
-
+import os
 
 class CovidStateStats(Resource):
     def post(self):
@@ -58,6 +58,16 @@ class CovidStateStats(Resource):
         # Get Relative Air Humidity
         relativeHumidity = None
 
+        try:
+            response = requests.get(
+                "https://api.openweathermap.org/data/2.5/weather?q=Denver,CO&appid=" + os.environ.get(
+                    "openweather_key"))
+            relativeHumidity = response.json()["main"][""]["humidity"]
+        except:
+            pass
+
+
+
         return jsonify(
             tot_cases=tot_cases,
             new_case=new_case,
@@ -89,7 +99,7 @@ class CovidCountyStats(Resource):
         relativeHumidity = None
         try:
             response = requests.get(
-                "https://api.openweathermap.org/data/2.5/weather?q=Denver,CO&appid=752491e87cd011b5cde484ead22c125f")
+                "https://api.openweathermap.org/data/2.5/weather?q=Denver,CO&appid="+ os.environ.get("openweather_key"))
             relativeHumidity = response.json()["main"][""]["humidity"]
         except:
             pass

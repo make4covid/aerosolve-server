@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="36671277-c9a0-4d91-bbf6-1e6c57c21c7e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/resources/covidStats.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/resources/covidStats.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +73,7 @@
       <workItem from="1623120374678" duration="2061000" />
       <workItem from="1623188024218" duration="385000" />
       <workItem from="1623784676576" duration="1634000" />
-      <workItem from="1623862201938" duration="11823000" />
+      <workItem from="1623862201938" duration="12147000" />
     </task>
     <servers />
   </component>
