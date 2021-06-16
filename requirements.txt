@@ -1,0 +1,8 @@
+flask
+pandas
+numpy
+ast
+requests
+datetime
+flask_restful
+gunicorn
