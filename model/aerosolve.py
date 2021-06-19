@@ -38,13 +38,15 @@ class Indoors():
     physio_params = []
     disease_params = []
     prec_params = []
-    prevalence = 0.01
-    percentage_sus = 1
-    sr_age_factor = 1
-    sr_strain_factor = 1
-    atm_co2 = 410  # ppm
+    prevalence = 0      #Hard-Coded  Conditional
+    percentage_sus = 1     #Hard-Coded
+    risk_tolerance = 0.1  # expected transmissions per infector #set to default
+    sr_age_factor = 1     #Hard-coded age group
+    sr_strain_factor = 0.1      #Hard-coded virus strain
+    atm_co2 = 410  # ppm    #Air CO2 hard coded
 
     # Calculated Variables
+
     room_vol = 0  # ft3
     fresh_rate = 0  # ft3/min
     recirc_rate = 0  # ft3/min
@@ -195,6 +197,7 @@ class Indoors():
 
         exp_time_ss = risk_tolerance / ((n_max - 1) * self.airb_trans_rate)  # hrs, steady-state
         exp_time_trans = exp_time_ss * (1 + (1 + 4 / (self.conc_relax_rate * exp_time_ss)) ** 0.5) / 2  # hrs, transient
+
         return exp_time_trans
 
     # Calculate maximum people allowed in the room across a range of exposure times, returning both transient
@@ -232,56 +235,88 @@ class Indoors():
     # Sets default parameters.
     def set_params(self,data):
         # Physical Parameters
+        floor_area = 910  # ft2
+
         if "floor_area" in data:
             floor_area = data["floor_area"]
-        else:
-            floor_area = 900  # ft2
 
+        mean_ceiling_height = 12  # ft
         if "ceiling_height" in data:
             mean_ceiling_height = data["ceiling_height"]
-        else:
-            mean_ceiling_height = 12  # ft
+
+        air_exchange_rate = 3  # /hr (air changes per hour (ACH))
 
         if "air_exchange_rate" in data:
-            air_exchange_rate = data["air_exchange_rate"]
-        else:
-            air_exchange_rate = 3  # /hr (air changes per hour (ACH))
+            air_exchange_rate = data["air_exchange_rate"]        #From ventilation
+
+        ## Convert recirc rate to outdoor air fraction
+        #outdoor_air_fraction = air_exchange_rate / (air_exchange_rate + recirc_rate)
+        if "recirc_rate" in data:
+            self.recirc_rate = data["recirc_rate"]
+
+        primary_outdoor_air_fraction = 0.2  #Default
+        if "air_exchange_rate" and "recirc_rate" in data:
+            primary_outdoor_air_fraction = air_exchange_rate / (air_exchange_rate + self.recirc_rate)   # Ventilation outdoor vch
 
 
-        if "primary_outdoor_air_fraction" in data:
-            primary_outdoor_air_fraction = data["primary_outdoor_air_fraction"]
-        else:
-            primary_outdoor_air_fraction = 0.2  # 1.0 = natural ventilation
+        aerosol_filtration_eff = 0  # >0.9997 HEPA, =0.2-0.9 MERVs, =0 no filter
+        if "merv" in data:
+            aerosol_filtration_eff =  Indoors.merv_to_eff(data["merv"], data["def_aerosol_radius"])
 
-        if "aerosol_filtration_eff" in data:
-            aerosol_filtration_eff = data["aerosol_filtration_eff"]
-        else:
-            aerosol_filtration_eff = 0  # >0.9997 HEPA, =0.2-0.9 MERVs, =0 no filter
+        relative_humidity = 0.6
+
         if  "relative_humidity" in data:
             relative_humidity = data["relative_humidity"]
-        else:
-            relative_humidity = 0.6
 
         self.physical_params = [floor_area, mean_ceiling_height, air_exchange_rate, primary_outdoor_air_fraction,
                                 aerosol_filtration_eff, relative_humidity]
 
         # Physiological Parameters
+
         breathing_flow_rate = 0.5  # m3/hr
+        if "breathing_flow_rate" in data:
+            breathing_flow_rate = (data["breathing_flow_rate"] * 60 / 35.3147)    #ft3/min to  m3/hr
+
+
         max_aerosol_radius = 2  # micrometers
+
         self.physio_params = [breathing_flow_rate, max_aerosol_radius]
 
         # Disease Parameters
-        exhaled_air_inf = 30  # infection quanta/m3
-        max_viral_deact_rate = 0.3  # /hr
+        if "exhaled_air_inf" in data:
+            exhaled_air_inf = (data["exhaled_air_inf"] * 35.3147)                # from q/ft3 to q/m3
+        else:
+            exhaled_air_inf = 30 # infection quanta/m3
+        if "sr_age_factor" in data:
+            self.sr_age_factor = data["sr_age_factor"]
+
+        max_viral_deact_rate = 0.6  # /hr Default value
         self.disease_params = [exhaled_air_inf, max_viral_deact_rate]
 
+
+
+
+        mask_eff = 1
+        if "mask_eff" in data:
+            mask_eff = data["mask_eff"]
+
+        mask_fit = 1
+        if "mask_fit" in data:
+            mask_fit = data["mask_fit"]
+
         # Precautionary Parameters
-        mask_passage_prob = 0.1  # 1 = no masks, ~0.1 cloth, <0.05 N95
-        risk_tolerance = 0.1  # expected transmissions per infector
+
+        mask_real_eff = mask_eff * mask_fit
+        mask_passage_prob = 1 - mask_real_eff   # 1 = no masks, ~0.1 cloth, <0.05 N95      ???
+
+        if "pim" in data:
+            pim_input = data["pim"]
+            self.percentage_sus = 1 - (pim_input)
+
+        risk_tolerance = self.risk_tolerance
         self.prec_params = [mask_passage_prob, risk_tolerance]
 
-        # Prevalence
-        self.prevalence = 0.01
+
 
     # Convert MERV rating to aerosol filtration efficiency
     # merv: if not integer, floor it
@@ -309,3 +344,24 @@ class Indoors():
     def clamp(n, smallest, largest):
         return max(smallest, min(n, largest))
 
+'''
+{
+    "nOfPeople": 100,
+    "floor_area": 1200,
+    "ceiling_height": 12,
+    "exp_time": 1,
+    "recirc_rate": 5.5,           //Recirculation Rate    
+    "air_exchange_rate": 5,           //outdoor ACH
+    "relative_humidity": 0.6,
+    "sr_age_factor": 0.68,           Age Group
+    "merv": 10,                     Filtration System (MERV):
+    "def_aerosol_radius": 2,
+    "mask_eff": 0,
+    "mask_fit":0,
+    "exhaled_air_inf": 2.04,          Respiratory Activity
+    "breathing_flow_rate": 0.29        Breathing Rate
+    "pim": 0.5                      Percent Immune
+}
+
+
+'''

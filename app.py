@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from api.resources.covidStats import CovidStateStats, CovidCountyStats
 from api.resources.aerosolve import calc_n_max,calc_co2_series,calc_max_time,\
-    calc_n_max_series,get_six_ft_n,get_n_max,merv_to_eff,calc_n_max_ss
+    calc_n_max_series,get_six_ft_n,get_n_max,merv_to_eff,calc_n_max_ss, aerosolve_data
 
 
 app = Flask(__name__)
@@ -11,6 +11,8 @@ api = Api(app)
 
 api.add_resource(CovidStateStats,'/state_stats')
 api.add_resource(CovidCountyStats,'/county_stats')
+api.add_resource(aerosolve_data,'/aerosolve_model')
+
 api.add_resource(calc_n_max,'/indoor/calc_n_max')
 api.add_resource(calc_co2_series,'/indoor/calc_co2_series')
 api.add_resource(calc_n_max_ss,'/indoor/calc_n_max_ss')

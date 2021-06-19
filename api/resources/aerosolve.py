@@ -2,6 +2,26 @@ from flask import Flask,jsonify,request
 from flask_restful import Resource
 import math
 from model.aerosolve import Indoors
+
+
+class aerosolve_data(Resource):
+    def post(self):
+        data = request.get_json()
+        indoor = Indoors(data)
+        # Check the user input, if no user input set default parameter
+        data = request.get_json()
+        #calc_max_time safe time given number of occupants | Check the user input, if no user input set default parameter
+        #Max safe exposure time given people
+        max_time = indoor.calc_max_time(data['nOfPeople'])
+        #Max people given exposure time, where is other information?
+        max_people = indoor.calc_n_max(data['exp_time'])
+
+        return jsonify({
+            "max_hour": max_time # using exp_time_trans
+            ,
+            "max_people": max_people
+        })
+
 class calc_n_max(Resource):
     def post(self):
         data = request.get_json()
@@ -55,7 +75,7 @@ class merv_to_eff(Resource):
         #Check the user input, if no user input set default parameter
         print(data)
         indoor = Indoors(data)
-        return jsonify(indoor.merv_to_eff(data["merv"],data["aerosol_radius"]))
+        return jsonify(indoor.merv_to_eff(data["merv"],data["def_aerosol_radius"]))
 class calc_n_max_ss(Resource):
     def post(self):
         data = request.get_json()
