@@ -22,6 +22,7 @@ class aerosolve_data(Resource):
             "max_people": max_people
         })
 
+
 class calc_n_max(Resource):
     def post(self):
         data = request.get_json()
@@ -29,6 +30,8 @@ class calc_n_max(Resource):
         # Check the user input, if no user input set default parameter
         data = request.get_json()
         return jsonify(math.floor(indoor.calc_n_max(data['exp_time'])))
+
+
 class calc_co2_series(Resource):
     def post(self):
         data = request.get_json()
@@ -38,13 +41,17 @@ class calc_co2_series(Resource):
         df = indoor.calc_co2_series(data['minimum_time'], data['maximum_time'], data['time_step'], data['risk_mode'])
         return jsonify(df.to_json(orient='records'))
 
+
 class calc_max_time(Resource):
     def post(self):
         data = request.get_json()
         indoor = Indoors(data)
         # Check the user input, if no user input set default parameter
         # Return maximum exposure time
-        return jsonify(math.floor(indoor.calc_max_time(data['nOfPeople'])))
+        risk_type = "conditional"
+        if "risk_type" in data:
+            risk_type = data["risk_type"]
+        return jsonify(math.floor(indoor.calc_max_time(data['nOfPeople'], risk_type)))
 
 class calc_n_max_series(Resource):
     def post(self):
