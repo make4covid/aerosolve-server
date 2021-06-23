@@ -3,31 +3,31 @@ To run in local environment:
 git clone https://github.com/make4covid/aerosolve-server/
 
 **For Windows:** 
-*Verify if pip is installed following this command*
-pip --version
-*Verify if virtualenv is installed following this command*
-virtualenv --version
-*Verify if python is installed*
-python --version
+*Verify if pip is installed following this command*<br/>
+pip --version<br/>
+*Verify if virtualenv is installed following this command*<br/>
+virtualenv --version<br/>
+*Verify if python is installed*<br/>
+python --version<br/>
+<br/>
+<br/>
+pip install virtualenv<br/>
+virtualenv Aerosolve_Backend<br/>
+<FolderSourceCode>\Scripts\activate<br/>
+pip install -r requirements.txt<br/>
+<br/>
+<br/>  
+**For Mac:**<br/>
+*Verify if pip is installed following this command*<br/>
+pip --version<br/>
+*Verify if virtualenv is installed following this command*<br/>
+virtualenv --version<br/>
 
-
-pip install virtualenv
-virtualenv Aerosolve_Backend
-<FolderSourceCode>\Scripts\activate
-pip install -r requirements.txt
-
-  
-**For Mac:**
-*Verify if pip is installed following this command*
-pip --version
-*Verify if virtualenv is installed following this command*
-virtualenv --version
-
-*Verify if python is installed*
-python --version
-
-pip install virtualenv  
-cd <FolderSourceCode>
-virtualenv venv
-source <FolderSourceCode>/bin/activate
-pip install -r requirements.txt  
+*Verify if python is installed*<br/>
+python --version<br/>
+<br/>
+pip install virtualenv<br/>  
+cd <FolderSourceCode><br/>
+virtualenv venv<br/>
+source <FolderSourceCode>/bin/activate<br/>
+pip install -r requirements.txt<br/>
