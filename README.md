@@ -12,8 +12,8 @@ python --version<br/>
 <br/>
 <br/>
 pip install virtualenv<br/>
-virtualenv Aerosolve_Backend<br/>
-<FolderSourceCode>\Scripts\activate<br/>
+virtualenv aerosolve-server<br/>
+aerosolve-server\Scripts\activate<br/>
 pip install -r requirements.txt<br/>
 <br/>
 <br/>  
@@ -27,7 +27,7 @@ virtualenv --version<br/>
 python --version<br/>
 <br/>
 pip install virtualenv<br/>  
-cd <FolderSourceCode><br/>
+cd aerosolve-server<br/>
 virtualenv venv<br/>
-source <FolderSourceCode>/bin/activate<br/>
+source aerosolve-server/bin/activate<br/>
 pip install -r requirements.txt<br/>
