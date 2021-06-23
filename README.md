@@ -1,7 +1,7 @@
-"# aerosolve-server" 
-To run in local environment:
+"# aerosolve-server" <br/>
+To run in local environment:<br/>
 git clone https://github.com/make4covid/aerosolve-server/
-
+<br/>
 **For Windows:**<br/>
 *Verify if pip is installed following this command*<br/>
 pip --version<br/>
