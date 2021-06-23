@@ -17,7 +17,7 @@ class CovidStateStats(Resource):
         # Todo parallel send request with python (multi threading)
         try:
             response = requests.get(
-                'https://data.cdc.gov/resource/9mfq-cb36.json?submission_date=' + today_date + '&state=' + data[
+                'https://data.cdc.gov/resource/9mfq-cb36.json?submission_date=' + "2021-06-20" + '&state=' + data[
                     "state"])
             response_json = response.json()
             tot_cases = response_json[0]["tot_cases"]

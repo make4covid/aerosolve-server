@@ -1,13 +1,15 @@
 from flask import Flask
 from flask_restful import Api
+from flask_cors import CORS, cross_origin
 from api.resources.covidStats import CovidStateStats, CovidCountyStats
 from api.resources.aerosolve import calc_n_max,calc_co2_series,calc_max_time,\
     calc_n_max_series,get_six_ft_n,get_n_max,merv_to_eff,calc_n_max_ss, aerosolve_data
 
 
 app = Flask(__name__)
+cors = CORS(app)
 api = Api(app)
-
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 api.add_resource(CovidStateStats,'/state_stats')
 api.add_resource(CovidCountyStats,'/county_stats')
