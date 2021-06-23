@@ -2,7 +2,7 @@
 To run in local environment:
 git clone https://github.com/make4covid/aerosolve-server/
 
-**For Windows:** 
+**For Windows:**<br/>
 *Verify if pip is installed following this command*<br/>
 pip --version<br/>
 *Verify if virtualenv is installed following this command*<br/>
