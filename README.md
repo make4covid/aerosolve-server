@@ -15,6 +15,9 @@ pip install virtualenv<br/>
 virtualenv aerosolve-server<br/>
 aerosolve-server\Scripts\activate<br/>
 pip install -r requirements.txt<br/>
+
+**To run the application**<br/>
+python app.py
 <br/>
 <br/>  
 **For Mac:**<br/>
@@ -31,3 +34,5 @@ cd aerosolve-server<br/>
 virtualenv venv<br/>
 source aerosolve-server/bin/activate<br/>
 pip install -r requirements.txt<br/>
+**To run the application**<br/>
+python app.py
