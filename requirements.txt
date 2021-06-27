@@ -7,3 +7,4 @@ requests==2.25.1
 datetime==4.3
 gunicorn==20.1.0
 python-dotenv==0.18.0
+redis=3.5.3

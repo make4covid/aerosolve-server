@@ -1,5 +1,6 @@
 from flask import Flask,jsonify,request
 from flask_restful import Resource
+import pandas as pd
 from datetime import date
 from datetime import timedelta
 import requests
@@ -77,32 +78,43 @@ class CovidStateStats(Resource):
             vaccineRateTotal=vaccineRateTotal,
             relativeHumidity=relativeHumidity
         )
+
+#How to cache this?
+
 class CovidCountyStats(Resource):
     def post(self):
-        today_date = (date.today() - timedelta(days=1)).strftime("%Y-%m-%d")
         data = request.get_json()
+        state = data["state"]
+        county = data["county"]
+        today_date = (date.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+        yesterday_date = (date.today() - timedelta(days=2)).strftime("%Y-%m-%d")
+
         # Todo Get Confirmed Covid Case for county
         # Todo Get Deaths Covid Case for county
-        # Relative Air Humidity
-        '''
-        Input{
-            state: "CO",
-            county: "Denver"
-        }
-        Output{
-            humidity: 100
-        }
-        Docs:
-        https://openweathermap.org/current
-    
-        '''
-        relativeHumidity = None
+        df_yesterday = pd.read_csv("dataAggegation-" + yesterday_date + ".csv")
+        df_today = pd.read_csv("dataAggegation-" + today_date + ".csv")
+
+        yesterday_grouped = df_yesterday[df_yesterday["date"] == yesterday_date]
+
+        today_grouped = df_today[df_today["date"] == today_date]
+
+        today_ = today_grouped[(today_grouped["state"] == state) & (today_grouped["county"] == county)]
+
+        yesterday_ = yesterday_grouped[(yesterday_grouped["state"] == state) & (yesterday_grouped["county"] == county)]
+
+        total_case = 0
+        total_death = 0
+        new_case = 0
+        new_death = 0
         try:
-            response = requests.get(
-                "https://api.openweathermap.org/data/2.5/weather?q=Denver,CO&appid="+ os.environ.get("openweather_key"))
-            relativeHumidity = response.json()["main"][""]["humidity"]
+            total_case = today_['cases'].values[0]
+            total_death = today_['deaths'].values[0]
+            new_case = today_['cases'].values[0] - yesterday_['cases'].values[0]
+            new_death = today_['deaths'].values[0] - yesterday_['deaths'].values[0]
         except:
             pass
+
+
         # Get vaccination rate County
         '''
         Input{
@@ -117,6 +129,7 @@ class CovidCountyStats(Resource):
         }
         '''
 
+        '''
         vaccineData = None
         try:
             response = requests.get(
@@ -130,9 +143,11 @@ class CovidCountyStats(Resource):
             vaccineData = response.json()
         except:
             pass
+        '''
 
         return jsonify(
-            vaccinateRatePcr=vaccineData[0]["series_complete_pop_pct"],
-            vaccineRateTotal=vaccineData[0]["series_complete_yes"],
-            relativeHumidity=relativeHumidity
+            totalCase=float(total_case),
+            totalDeath=float(total_death),
+            newCase=float(new_case),
+            newDeath=float(new_death)
         )
