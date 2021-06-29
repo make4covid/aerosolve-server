@@ -79,8 +79,8 @@ class CovidStateStats(Resource):
             relativeHumidity=relativeHumidity
         )
 
-#How to cache this?
 
+#How to cache this?
 class CovidCountyStats(Resource):
     def post(self):
         data = request.get_json()
