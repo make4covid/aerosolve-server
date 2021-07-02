@@ -2,14 +2,15 @@ from flask import Flask
 from cache.cache import cache
 from flask_restful import Api
 from flask_cors import CORS, cross_origin
-from api.resources.covidStats import CovidStateStats, CovidCountyStats
+from api.resources.covidStats import CovidStateCaseStats,CovidStateVaccineStats, CovidCountyCasesStats\
+    , CovidCountyVaccineStats
 from api.resources.aerosolve import calc_n_max,calc_co2_series,calc_max_time,\
     calc_n_max_series,get_six_ft_n,get_n_max,merv_to_eff,calc_n_max_ss, aerosolve_data
 
 config = {
     "DEBUG": True,          # some Flask specific configs
     "CACHE_TYPE": "SimpleCache",  # Flask-Caching related configs
-    "CACHE_DEFAULT_TIMEOUT": 1000
+    "CACHE_DEFAULT_TIMEOUT": 60 # 60 seconds
 }
 
 app = Flask(__name__)
@@ -20,8 +21,12 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 api = Api(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-api.add_resource(CovidStateStats,'/state_stats')
-api.add_resource(CovidCountyStats,'/county_stats')
+
+api.add_resource(CovidStateCaseStats,'/state_cases_stats')
+
+api.add_resource(CovidStateVaccineStats,'/state_vaccine_stats')
+api.add_resource(CovidCountyCasesStats,'/county_cases_stats')
+api.add_resource(CovidCountyVaccineStats,'/county_vaccine_stats')
 api.add_resource(aerosolve_data,'/aerosolve_model')
 
 api.add_resource(calc_n_max,'/indoor/calc_n_max')
