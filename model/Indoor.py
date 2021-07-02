@@ -111,42 +111,24 @@ class Indoors:
         mean_ceiling_height_m = mean_ceiling_height * 0.3048
         self.room_vol = floor_area * mean_ceiling_height  # ft3
         room_vol_m = 0.0283168 * self.room_vol  # m3
-        print("Room volume V:", self.room_vol)
 
         self.fresh_rate = self.room_vol * air_exch_rate / 60  # ft3/min
-
-        print("Ventilation (outdoor) flow rate Q: ", self.fresh_rate)
-
         self.recirc_rate = self.fresh_rate * (1/primary_outdoor_air_fraction - 1)  # ft3/min
-
-        print("Return (recirculation) flow rate Qf:", self.recirc_rate)
-
         self.air_filt_rate = aerosol_filtration_eff * self.recirc_rate * 60 / self.room_vol  # /hr
-        print("Air filtration rate (λf):", self.air_filt_rate)
-
         self.eff_aerosol_radius = ((0.4 / (1 - relative_humidity)) ** (1 / 3)) * max_aerosol_radius
-        print("Humidity-adjusted aerosol radius r̅eff:", self.eff_aerosol_radius)
         self.viral_deact_rate = max_viral_deact_rate * relative_humidity
-        print("Humidity-adjusted viral deactivation rate λv:", self.viral_deact_rate)
         # self.sett_speed = 3 * (self.eff_aerosol_radius / 5) ** 2  # mm/s
         self.sett_speed = (2 / 9) * self.density_droplet * self.acceleration_gravity * (self.eff_aerosol_radius ** 2) / (self.viscosity_air * (10 ** 9))
 
 
         self.sett_speed = self.sett_speed * 60 * 60 / 1000  # m/hr
-
-        print("Effective aerosol settling speed vₛ(r̅eff):",self.sett_speed / 18.288)
         self.conc_relax_rate = air_exch_rate + self.air_filt_rate + self.viral_deact_rate + self.sett_speed / mean_ceiling_height_m  # /hr
-        print("Concentration relaxation rate λc:", self.conc_relax_rate)
-
         self.airb_trans_rate = ((breathing_flow_rate * mask_passage_prob) ** 2) * exhaled_air_inf / (room_vol_m * self.conc_relax_rate)
-        print("Airborne transmission rate βₐ", self.airb_trans_rate)
 
     # Calculate maximum people allowed in the room given an exposure time (hours), using the
     # transient model
     def calc_n_max(self, exp_time, risk_type='conditional'):
         risk_tolerance = self.prec_params[1]  # no units
-        print("risk_tolerance:",risk_tolerance)
-
         if risk_type == 'conditional':
             n_max = 1 + (risk_tolerance * (1 + 1/(self.conc_relax_rate * exp_time)) / (self.percentage_sus * self.airb_trans_rate * exp_time))
         elif risk_type == 'prevalence':

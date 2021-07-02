@@ -5,6 +5,8 @@ from datetime import date
 from datetime import timedelta
 import requests
 import os
+from cache.cache import cache
+
 
 class CovidStateStats(Resource):
     def post(self):
@@ -15,7 +17,7 @@ class CovidStateStats(Resource):
         new_case = None
         tot_death = None
         new_death = None
-        # Todo parallel send request with python (multi threading)
+
         try:
             response = requests.get(
                 'https://data.cdc.gov/resource/9mfq-cb36.json?submission_date=' + "2021-06-20" + '&state=' + data[
@@ -80,17 +82,31 @@ class CovidStateStats(Resource):
         )
 
 
-#How to cache this?
+# Todo How to cache this?
 class CovidCountyStats(Resource):
+
+
     def post(self):
         data = request.get_json()
         state = data["state"]
         county = data["county"]
+
+        cache_data = cache.get(state + " " + county)
+
+        if cache_data is not None:
+            data = cache_data.split(" ")
+            print(data)
+            return jsonify(
+                totalCase=float(data[0]),
+                totalDeath=float(data[1]),
+                newCase=float(data[2]),
+                newDeath=float(data[3])
+            )
+
         today_date = (date.today() - timedelta(days=1)).strftime("%Y-%m-%d")
         yesterday_date = (date.today() - timedelta(days=2)).strftime("%Y-%m-%d")
 
-        # Todo Get Confirmed Covid Case for county
-        # Todo Get Deaths Covid Case for county
+
         df_yesterday = pd.read_csv("dataAggegation-" + yesterday_date + ".csv")
         df_today = pd.read_csv("dataAggegation-" + today_date + ".csv")
 
@@ -111,39 +127,17 @@ class CovidCountyStats(Resource):
             total_death = today_['deaths'].values[0]
             new_case = today_['cases'].values[0] - yesterday_['cases'].values[0]
             new_death = today_['deaths'].values[0] - yesterday_['deaths'].values[0]
+            key = state + " " + county
+            value = str(total_case) + " " + str(total_death) + " " + str(new_case) + " " + str(new_death)
+            print("Value:",value)
+            cache.set(key, value)
+            print("Set Cache:",cache)
         except:
+            print("Fail cache")
             pass
 
 
-        # Get vaccination rate County
-        '''
-        Input{
-         state: "CO",
-         county: "Fremont"
-        }
-        - Vaccination Rate Data for state -> county
-        Output{
-            "vaccination rate": 
-            "series_complete_pop_pct":"22.8"  //Population percentage
-            "series_complete_12plus":"10921"  //Number of people
-        }
-        '''
 
-        '''
-        vaccineData = None
-        try:
-            response = requests.get(
-                'https://data.cdc.gov/resource/8xkx-amqh.json?date='
-                + today_date +
-                '&' +
-                'recip_state=' + data["state"]
-                + '&recip_county='
-                + data["county"]
-            )  # Google also use this data.
-            vaccineData = response.json()
-        except:
-            pass
-        '''
 
         return jsonify(
             totalCase=float(total_case),

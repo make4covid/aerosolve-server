@@ -5,9 +5,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/resources/aerosolve.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/resources/aerosolve.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/resources/covidStats.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/resources/covidStats.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataAggegation-2021-06-22.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/dataAggegation-2021-06-23.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/aerosolve.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/Indoor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/Indoor.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/Indoor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/us-counties.csv" beforeDir="false" afterPath="$PROJECT_DIR$/us-counties.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +97,8 @@
       <workItem from="1624829543926" duration="1725000" />
       <workItem from="1624892773820" duration="16918000" />
       <workItem from="1624916105626" duration="1131000" />
-      <workItem from="1624981598147" duration="761000" />
+      <workItem from="1624981598147" duration="2272000" />
+      <workItem from="1625239855640" duration="7864000" />
     </task>
     <servers />
   </component>

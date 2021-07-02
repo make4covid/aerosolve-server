@@ -15,8 +15,6 @@ def set_parameter(object,data):
     if "air_exchange_rate" and "recirc_rate" in data:
         air_exchange_rate = data["air_exchange_rate"]
         outdoor_air_fraction = air_exchange_rate / (air_exchange_rate + data["recirc_rate"])
-        print("outdoor_air_fraction:", outdoor_air_fraction)
-        print("Flor area")
         physical_params[3] = outdoor_air_fraction
     if "def_aerosol_radius" and "merv" in data:
         aerosol_filtration_eff = Indoors.merv_to_eff(data["merv"], data["def_aerosol_radius"])
@@ -55,7 +53,6 @@ def set_parameter(object,data):
     if "mask_eff" and "mask_fit" in data:
         mask_real_eff = data["mask_eff"] * data["mask_fit"]
         mask_passage_prob = round(1 - mask_real_eff, 4)  # 1 = no masks, ~0.1 cloth, <0.05 N95
-        print("Mask passage probability pm:", mask_passage_prob)
 
     if "risk_tolerance" in data:
         risk_tolerance = data["risk_tolerance"]
