@@ -106,17 +106,15 @@ class CovidCountyStats(Resource):
         today_date = (date.today() - timedelta(days=1)).strftime("%Y-%m-%d")
         yesterday_date = (date.today() - timedelta(days=2)).strftime("%Y-%m-%d")
 
-
-        df_yesterday = pd.read_csv("dataAggegation-" + yesterday_date + ".csv")
-        df_today = pd.read_csv("dataAggegation-" + today_date + ".csv")
-
-        yesterday_grouped = df_yesterday[df_yesterday["date"] == yesterday_date]
-
-        today_grouped = df_today[df_today["date"] == today_date]
-
-        today_ = today_grouped[(today_grouped["state"] == state) & (today_grouped["county"] == county)]
-
-        yesterday_ = yesterday_grouped[(yesterday_grouped["state"] == state) & (yesterday_grouped["county"] == county)]
+        try:
+            df_yesterday = pd.read_csv("dataAggegation-" + yesterday_date + ".csv")
+            df_today = pd.read_csv("dataAggegation-" + today_date + ".csv")
+            yesterday_grouped = df_yesterday[df_yesterday["date"] == yesterday_date]
+            today_grouped = df_today[df_today["date"] == today_date]
+            today_ = today_grouped[(today_grouped["state"] == state) & (today_grouped["county"] == county)]
+            yesterday_ = yesterday_grouped[(yesterday_grouped["state"] == state) & (yesterday_grouped["county"] == county)]
+        except:
+            pass
 
         total_case = 0
         total_death = 0

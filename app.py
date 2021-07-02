@@ -16,7 +16,7 @@ app = Flask(__name__)
 # tell Flask to use the above defined config
 app.config.from_mapping(config)
 cache.init_app(app)
-cors = CORS(app)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 api = Api(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
