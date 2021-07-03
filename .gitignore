@@ -1,8 +1,6 @@
 # exclude everything
 data/*
-
-# exception to the rule
-!data/.gitkeep 
+!data/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -142,4 +140,3 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
-data/
