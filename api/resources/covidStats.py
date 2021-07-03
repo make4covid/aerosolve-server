@@ -6,6 +6,8 @@ import requests
 import os
 from cache.cache import cache
 from urllib.parse import urlencode, quote_plus, quote
+from pathlib import Path
+
 
 # Todo Cache this
 
@@ -140,17 +142,23 @@ class CovidCountyCasesStats(Resource):
             new_death = float(data[3])
         else:
             try:
-                df_yesterday = pd.read_csv("data/dataAggregation-" + yesterday_date + ".csv")
-                df_today = pd.read_csv("data/dataAggregation-" + today_date + ".csv")
-
-                yesterday_grouped = df_yesterday[df_yesterday["date"] == yesterday_date]
-                today_grouped = df_today[df_today["date"] == today_date]
+                yesterday_grouped = None
+                today_grouped = None
+                yesterday_file = Path("data/dataAggregation-" + yesterday_date + ".csv")
+                today_file     = Path("data/dataAggregation-" + today_date + ".csv")
+                if yesterday_file.is_file() and today_file.is_file():
+                    df_yesterday = pd.read_csv("data/dataAggregation-" + yesterday_date + ".csv")
+                    df_today = pd.read_csv("data/dataAggregation-" + today_date + ".csv")
+                    yesterday_grouped = df_yesterday[df_yesterday["date"] == yesterday_date]
+                    today_grouped = df_today[df_today["date"] == today_date]
                 #Fall back to the latest file
-                if len(today_grouped) == 0:
-                    new_today_date = ((date.today() - timedelta(days=2))).strftime("%Y-%m-%d")
-                    today_grouped = df[df["date"] == new_today_date]
-                    new_yesterday_date = ((date.today() - timedelta(days=3))).strftime("%Y-%m-%d")
-                    yesterday_grouped = df[df["date"] == new_yesterday_date]
+                else:
+                    today_date = ((date.today() - timedelta(days=2))).strftime("%Y-%m-%d")
+                    yesterday_date = ((date.today() - timedelta(days=3))).strftime("%Y-%m-%d")
+                    df_yesterday = pd.read_csv("data/dataAggregation-" + yesterday_date + ".csv")
+                    df_today = pd.read_csv("data/dataAggregation-" + today_date + ".csv")
+                    yesterday_grouped = df_yesterday[df_yesterday["date"] == yesterday_date]
+                    today_grouped = df_today[df_today["date"] == today_date]
 
                 today_ = today_grouped[(today_grouped["state"] == state) & (today_grouped["county"] == county)]
                 yesterday_ = yesterday_grouped[(yesterday_grouped["state"] == state) &
