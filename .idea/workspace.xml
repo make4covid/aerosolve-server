@@ -4,6 +4,9 @@
     <list default="true" id="36671277-c9a0-4d91-bbf6-1e6c57c21c7e" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/resources/covidStats.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/resources/covidStats.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cache/cache.py" beforeDir="false" afterPath="$PROJECT_DIR$/cache/cache.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/daily_job.sh" beforeDir="false" afterPath="$PROJECT_DIR$/daily_job.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,7 +32,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../DeepTemporalClustering" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\PyCharm 2020.1.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
@@ -94,7 +97,8 @@
       <workItem from="1624892773820" duration="16918000" />
       <workItem from="1624916105626" duration="1131000" />
       <workItem from="1624981598147" duration="2272000" />
-      <workItem from="1625239855640" duration="23688000" />
+      <workItem from="1625239855640" duration="26416000" />
+      <workItem from="1625321896335" duration="1991000" />
     </task>
     <servers />
   </component>
@@ -114,10 +118,11 @@
       <screen x="1920" y="0" width="1080" height="1880" />
     </state>
     <state x="2190" y="686" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040/1920.0.1080.1880@1920.0.1080.1880" timestamp="1623874586622" />
-    <state x="740" y="264" key="FileChooserDialogImpl" timestamp="1624313300906">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="2336" y="477" key="FileChooserDialogImpl" timestamp="1625328800101">
+      <screen x="1920" y="0" width="1080" height="1880" />
     </state>
     <state x="740" y="264" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1080.1880@0.0.1920.1040" timestamp="1624313300906" />
+    <state x="2336" y="477" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1080.1880@1920.0.1080.1880" timestamp="1625328800101" />
     <state x="1961" y="585" key="SettingsEditor" timestamp="1624488102541">
       <screen x="1920" y="0" width="1080" height="1880" />
     </state>

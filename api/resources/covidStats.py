@@ -11,8 +11,52 @@ from pathlib import Path
 
 # Todo Cache this
 
+class CountryCaseStats(Resource):
+    #
 
-class CovidStateCaseStats(Resource):
+    def post(self):
+        data = request.get_json()
+        country = data["country"]
+
+        if country == "US":
+            url = "https://api.covidtracking.com/v1/us/daily.json"
+            r = requests.get(url)
+            data_today = r.json()[0]
+            data_yesterday = r.json()[1]
+            return jsonify(
+              tot_cases=data_today["positive"],
+              new_case=data_today["positive"] - data_yesterday["positive"],
+              tot_death=data_today["death"],
+              new_death=data_today["death"] - data_yesterday["death"],
+            )
+
+
+class CountryVaccineStats(Resource):
+    #https://github.com/owid/covid-19-data/blob/master/public/data/vaccinations/country_data/United%20States.csv
+
+    def post(self):
+        vaccine_data = Path("data/us-vaccine.csv")
+        df_vaccine = None
+        if vaccine_data.is_file():
+            df_vaccine = pd.read_csv("data/us-vaccine.csv")
+            print(df_vaccine.iloc[-1]["total_vaccinations"])
+
+            return jsonify(
+                total_vaccinations=int(df_vaccine.iloc[-1]["total_vaccinations"]),
+                people_vaccinated=int(df_vaccine.iloc[-1]["people_vaccinated"]),
+                people_fully_vaccinated=int(df_vaccine.iloc[-1]["people_fully_vaccinated"]),
+                people_vaccinated_change=int(df_vaccine.iloc[-1]["people_vaccinated"])-int(df_vaccine.iloc[-2]["people_vaccinated"])
+                ,
+                people_fully_vaccinated_change=int(df_vaccine.iloc[-1]["people_fully_vaccinated"])-int(df_vaccine.iloc[-1]["people_fully_vaccinated"])
+            )
+        else:
+            return jsonify(
+                total_vaccinations=0,
+                people_vaccinated=0,
+                people_fully_vaccinated=0
+            )
+
+class StateCaseStats(Resource):
     def post(self):
         data = request.get_json()
         state = data["state"]
@@ -64,7 +108,7 @@ class CovidStateCaseStats(Resource):
         )
 
 
-class CovidStateVaccineStats(Resource):
+class StateVaccineStats(Resource):
     def post(self):
         # Get Vaccination Rate State
         # Aggregate from the API for now
@@ -120,7 +164,8 @@ class CovidStateVaccineStats(Resource):
             vaccinate_rate_pcr=int(vaccinate_rate_pcr)
         )
 
-class CovidCountyCasesStats(Resource):
+
+class CountyCasesStats(Resource):
     def post(self):
         data = request.get_json()
         state = data["state"]
@@ -183,7 +228,7 @@ class CovidCountyCasesStats(Resource):
         )
 
 
-class CovidCountyVaccineStats(Resource):
+class CountyVaccineStats(Resource):
     def post(self):
         data = request.get_json()
         state = data["state"]
