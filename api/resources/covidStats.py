@@ -140,8 +140,8 @@ class CovidCountyCasesStats(Resource):
             new_death = float(data[3])
         else:
             try:
-                df_yesterday = pd.read_csv("dataAggegation-" + yesterday_date + ".csv")
-                df_today = pd.read_csv("dataAggegation-" + today_date + ".csv")
+                df_yesterday = pd.read_csv("data/dataAggegation-" + yesterday_date + ".csv")
+                df_today = pd.read_csv("data/dataAggegation-" + today_date + ".csv")
                 yesterday_grouped = df_yesterday[df_yesterday["date"] == yesterday_date]
                 today_grouped = df_today[df_today["date"] == today_date]
                 today_ = today_grouped[(today_grouped["state"] == state) & (today_grouped["county"] == county)]

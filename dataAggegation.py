@@ -5,14 +5,21 @@ from datetime import timedelta
 
 
 today_date = (date.today() - timedelta(days=1)).strftime("%Y-%m-%d")
+
 yesterday_date = (date.today() - timedelta(days=2)).strftime("%Y-%m-%d")
 df = pd.read_csv("us-counties.csv")
-
-
-yesterday_grouped = df[df["date"] == yesterday_date]
-yesterday_grouped.to_csv("dataAggegation-" + yesterday_date + ".csv")
-
-
 today_grouped = df[df["date"] == today_date]
-today_grouped.to_csv("dataAggegation-" + today_date + ".csv")
+
+if (len(today_grouped) == 0):
+    today_grouped = df[df["date"] == (today_date + timedelta(days=-1))]
+    today_grouped.to_csv("data/dataAggegation-" + today_date + ".csv")
+    yesterday_grouped = df[df["date"] == (yesterday_date + timedelta(days=-1))]
+    yesterday_grouped.to_csv("data/dataAggegation-" + yesterday_date + ".csv")
+    
+else:    
+    today_grouped.to_csv("data/dataAggegation-" + today_date + ".csv")
+    yesterday_grouped = df[df["date"] == yesterday_date]
+    yesterday_grouped.to_csv("data/dataAggegation-" + yesterday_date + ".csv")
+
+
 
