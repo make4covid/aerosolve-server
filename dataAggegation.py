@@ -11,9 +11,9 @@ df = pd.read_csv("us-counties.csv")
 today_grouped = df[df["date"] == today_date]
 
 if (len(today_grouped) == 0):
-    today_grouped = df[df["date"] == (today_date + timedelta(days=-1))]
+    today_grouped = df[df["date"] == (date.today() - timedelta(days=2))]
     today_grouped.to_csv("data/dataAggegation-" + today_date + ".csv")
-    yesterday_grouped = df[df["date"] == (yesterday_date + timedelta(days=-1))]
+    yesterday_grouped = df[df["date"] == (date.today() - timedelta(days=3))]
     yesterday_grouped.to_csv("data/dataAggegation-" + yesterday_date + ".csv")
     
 else:    
