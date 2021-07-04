@@ -266,7 +266,6 @@ class Indoors:
                     eff = item['1-3']
                 else:
                     eff = item['3-10']
-        print("Aerosol filtration efficiency:", eff)
         return eff
 
     # Clamp value within range

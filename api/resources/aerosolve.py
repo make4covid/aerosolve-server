@@ -119,7 +119,6 @@ class calc_n_max_series(Resource):
         data = request.get_json()
         set_parameter(indoor, data)
         df = indoor.calc_n_max_series(data['minimum_time'], data['maximum_time'], data['time_step'])
-        print(df)
         return jsonify(df.to_json(orient='records'))
 
 class get_six_ft_n(Resource):
