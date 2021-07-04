@@ -1,8 +1,7 @@
 import unittest
-import testcase
 from flask import json
 import app
-
+from datetime import date, timedelta
 
 class BaseTestCase(unittest.TestCase):
 
@@ -17,28 +16,29 @@ class BaseTestCase(unittest.TestCase):
                                     "recirc_rate": 1,"exhaled_air_inf": 2.04,"def_aerosol_radius": 2,"merv":6,"breathing_flow_rate": 0.29,
                                     "risk_tolerance": 0.1,"mask_eff": 0.90,"mask_fit": 0.95,"max_viral_deact_rate": 0.60,"relative_humidity": 0.6
         })
+
     def test_country_case_stats(self):
 
         res = self.client().post('/country_cases_stats', data=json.dumps(self.country), content_type='application/json')
         self.assertEqual(res.status_code, 200)
-
-    # Todo figure out what wrong here
+        print("test_country_case_stats:", res.json)
 
     def test_country_vaccine_stats(self):
         res = self.client().post('/country_vaccine_stats', data=json.dumps(self.country), content_type='application/json')
         self.assertEqual(res.status_code, 200)
+        print("test_country_vaccine_stats:", res.json)
 
     def test_state_cases_stats(self):
         res = self.client().post('/state_cases_stats', data=json.dumps(self.state),
                                  content_type='application/json')
         self.assertEqual(res.status_code, 200)
+        print("test_state_cases_stats:", res.json)
 
     def test_state_vaccine_stats(self):
         res = self.client().post('/state_vaccine_stats', data=json.dumps(self.state),
                                  content_type='application/json')
         self.assertEqual(res.status_code, 200)
-
-    # Todo figure out what wrong here
+        print("test_state_vaccine_stats:", res.json)
 
     def test_county_cases_stats(self):
         county = dict({
@@ -48,12 +48,23 @@ class BaseTestCase(unittest.TestCase):
         res = self.client().post('/county_cases_stats', data=json.dumps(county),
                                  content_type='application/json')
         self.assertEqual(res.status_code, 200)
+        print("test_county_cases_stats:", res.json)
 
+    def test_county_vaccine_stats(self):
+        county = dict({
+            "state": "CO",
+            "county": "Denver"
+        })
+        res = self.client().post('/county_vaccine_stats', data=json.dumps(county),
+                                 content_type='application/json')
+        self.assertEqual(res.status_code, 200)
+        print("test_county_vaccine_stats:", res.json)
 
     def test_aerosolve_model(self):
         res = self.client().post('/aerosolve_model', data=json.dumps(self.aerosolve_data),
                                  content_type='application/json')
         self.assertEqual(res.status_code, 200)
+        print("test_aerosolve_model:", res.json)
 
 
 if __name__ == '__main__':

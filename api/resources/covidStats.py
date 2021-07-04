@@ -1,4 +1,4 @@
-from flask import Flask,jsonify,request
+from flask import Flask,jsonify,request, make_response, current_app
 from flask_restful import Resource
 import pandas as pd
 from datetime import date, timedelta
@@ -12,64 +12,88 @@ from pathlib import Path
 # Todo Cache this
 
 class CountryCaseStats(Resource):
-    #
-
+    #API call
     def post(self):
         data = request.get_json()
         country = data["country"]
+        print("Country:", country)
+        cache_cases_country = cache.get(country + " cases")
+        if cache_cases_country is not None:
+            data = cache_cases_country.split(" ")
+
+            return make_response(jsonify(
+                tot_cases=data[0],
+                new_case=data[1],
+                tot_death=data[2],
+                new_death=data[3],
+            ), 200)
 
         if country == "US":
             url = "https://api.covidtracking.com/v1/us/daily.json"
             r = requests.get(url)
             data_today = r.json()[0]
             data_yesterday = r.json()[1]
-            return jsonify(
-              tot_cases=data_today["positive"],
-              new_case=data_today["positive"] - data_yesterday["positive"],
-              tot_death=data_today["death"],
-              new_death=data_today["death"] - data_yesterday["death"],
-            )
+            tot_cases = int(data_today["positive"])
+            new_case = int(data_today["positive"] - data_yesterday["positive"])
+            tot_death = int(data_today["death"])
+            new_death = int(data_today["death"] - data_yesterday["death"])
+
+            key = country + " cases"
+            value = str(tot_cases) + " " + str(new_case) + " " + str(tot_death) + " " + str(new_death)
+            cache.set(key, value)
+
+            return make_response(jsonify(
+              tot_cases=tot_cases,
+              new_case=new_case,
+              tot_death=tot_death,
+              new_death=new_death,
+            ), 200)
+        else:
+            return make_response(jsonify(
+                reason="Country is not yet configure",
+            ), 400)
+
+
 
 
 class CountryVaccineStats(Resource):
     #https://github.com/owid/covid-19-data/blob/master/public/data/vaccinations/country_data/United%20States.csv
-
+    #Batch file jobs
     def post(self):
-        vaccine_data = Path("data/us-vaccine.csv")
-        df_vaccine = None
+        filename = os.path.join(current_app.root_path, 'data', 'us-vaccine.csv')
+        vaccine_data = Path(filename)
         if vaccine_data.is_file():
-            df_vaccine = pd.read_csv("data/us-vaccine.csv")
-            print(df_vaccine.iloc[-1]["total_vaccinations"])
+            df_vaccine = pd.read_csv(filename)
 
-            return jsonify(
+            return make_response(jsonify(
                 total_vaccinations=int(df_vaccine.iloc[-1]["total_vaccinations"]),
                 people_vaccinated=int(df_vaccine.iloc[-1]["people_vaccinated"]),
                 people_fully_vaccinated=int(df_vaccine.iloc[-1]["people_fully_vaccinated"]),
                 people_vaccinated_change=int(df_vaccine.iloc[-1]["people_vaccinated"])-int(df_vaccine.iloc[-2]["people_vaccinated"])
                 ,
                 people_fully_vaccinated_change=int(df_vaccine.iloc[-1]["people_fully_vaccinated"])-int(df_vaccine.iloc[-1]["people_fully_vaccinated"])
-            )
+            ), 200)
         else:
-            return jsonify(
-                total_vaccinations=0,
-                people_vaccinated=0,
-                people_fully_vaccinated=0
-            )
+            return make_response(jsonify(
+                reason="No csv file for country vaccine stats",
+            ), 400)
+
 
 class StateCaseStats(Resource):
+
     def post(self):
         data = request.get_json()
         state = data["state"]
         cache_case_state = cache.get(state + " cases")
-
         if cache_case_state is not None:
             data = cache_case_state.split(" ")
-            return jsonify(
+            return make_response(jsonify(
                 tot_cases=data[0],
                 new_case=data[1],
                 tot_death=data[2],
                 new_death=data[3],
-            )
+            ), 200)
+
         today_date = (date.today() - timedelta(days=1)).strftime("%Y-%m-%d")
         previous_date = (date.today() - timedelta(days=10)).strftime("%Y-%m-%d")
         tot_cases = 0
@@ -98,14 +122,16 @@ class StateCaseStats(Resource):
             cache.set(key, value)
 
         except ValueError:
-            print(ValueError)
-            pass
-        return jsonify(
+            return make_response(jsonify(
+                reason="No data source available",
+            ), 400)
+        return make_response(jsonify(
             tot_cases=tot_cases,
             new_case=new_case,
             tot_death=tot_death,
             new_death=new_death,
-        )
+        ), 200)
+
 
 
 class StateVaccineStats(Resource):
@@ -117,16 +143,14 @@ class StateVaccineStats(Resource):
         cache_vaccine_state = cache.get(state + " vaccine")
         if cache_vaccine_state is not None:
             data = cache_vaccine_state.split(" ")
-            return jsonify(
+            return make_response(jsonify(
                 total_populate=(data[0]),
                 vaccine_rate_total=(data[1]),
                 vaccinate_rate_pcr=(data[2])
-            )
+            ), 200)
 
         today_date = (date.today() - timedelta(days=1)).strftime("%Y-%m-%d")
         previous_date = (date.today() - timedelta(days=10)).strftime("%Y-%m-%d")
-
-
         vaccinate_rate_pcr = 0
         vaccine_rate_total = 0
         total_populate = 0
@@ -148,21 +172,24 @@ class StateVaccineStats(Resource):
                     total_populate += (100 * float(item["series_complete_yes"])) / float(item["series_complete_pop_pct"])
             try:
                 vaccinate_rate_pcr = (vaccine_rate_total / total_populate) * 100
-            except:
-                pass
+            except ValueError:
+                return make_response(jsonify(
+                    reason="Division by 0",
+                ), 400)
 
             key = state + " vaccine"
             value = str(total_populate) + " " + str(vaccine_rate_total) + " " + str(vaccinate_rate_pcr)
             cache.set(key, value)
         except ValueError:
-            print(ValueError)
-            pass
+            return make_response(jsonify(
+                reason="Some thing wrong with the data source",
+            ), 400)
 
-        return jsonify(
+        return make_response(jsonify(
             total_populate=int(total_populate),
             vaccine_rate_total=int(vaccine_rate_total),
             vaccinate_rate_pcr=int(vaccinate_rate_pcr)
-        )
+        ), 200)
 
 
 class CountyCasesStats(Resource):
@@ -189,19 +216,24 @@ class CountyCasesStats(Resource):
             try:
                 yesterday_grouped = None
                 today_grouped = None
-                yesterday_file = Path("data/dataAggregation-" + yesterday_date + ".csv")
-                today_file     = Path("data/dataAggregation-" + today_date + ".csv")
+                yesterday_filename = os.path.join(current_app.root_path, 'data', "dataAggregation-" + yesterday_date + ".csv")
+                vaccine_data = Path(yesterday_filename)
+                today_filename = os.path.join(current_app.root_path,'data',"dataAggregation-" + today_date + ".csv")
+                yesterday_file = Path(yesterday_filename)
+                today_file     = Path(today_filename)
                 if yesterday_file.is_file() and today_file.is_file():
-                    df_yesterday = pd.read_csv("data/dataAggregation-" + yesterday_date + ".csv")
-                    df_today = pd.read_csv("data/dataAggregation-" + today_date + ".csv")
+                    df_yesterday = pd.read_csv(yesterday_filename)
+                    df_today = pd.read_csv(today_filename)
                     yesterday_grouped = df_yesterday[df_yesterday["date"] == yesterday_date]
                     today_grouped = df_today[df_today["date"] == today_date]
                 #Fall back to the latest file
                 else:
                     today_date = ((date.today() - timedelta(days=2))).strftime("%Y-%m-%d")
                     yesterday_date = ((date.today() - timedelta(days=3))).strftime("%Y-%m-%d")
-                    df_yesterday = pd.read_csv("data/dataAggregation-" + yesterday_date + ".csv")
-                    df_today = pd.read_csv("data/dataAggregation-" + today_date + ".csv")
+                    yesterday_filename = os.path.join(current_app.root_path,'data', "dataAggregation-" + yesterday_date + ".csv")
+                    today_filename = os.path.join(current_app.root_path,'data', "dataAggregation-" + today_date + ".csv")
+                    df_yesterday = pd.read_csv(yesterday_filename)
+                    df_today = pd.read_csv(today_filename)
                     yesterday_grouped = df_yesterday[df_yesterday["date"] == yesterday_date]
                     today_grouped = df_today[df_today["date"] == today_date]
 
@@ -216,16 +248,16 @@ class CountyCasesStats(Resource):
                 value = str(total_case) + " " + str(total_death) + " " + str(new_case) + " " + str(new_death)
                 cache.set(key, value)
             except ValueError:
-                print(ValueError)
+                return make_response(jsonify(
+                    reason="Some thing wrong with the data source",
+                ), 400)
 
-                pass
-
-        return jsonify(
+        return make_response(jsonify(
             totalCase=float(total_case),
             totalDeath=float(total_death),
             newCase=float(new_case),
             newDeath=float(new_death),
-        )
+        ), 200)
 
 
 class CountyVaccineStats(Resource):
@@ -265,12 +297,12 @@ class CountyVaccineStats(Resource):
                 value = str(total_populate) + " " + str(vaccine_rate_total) + " " + str(vaccinate_rate_pcr)
                 cache.set(key, value)
             except ValueError:
-                print(ValueError)
+                return make_response(jsonify(
+                    reason="Some thing wrong with the data source",
+                ), 400)
 
-                pass
-
-        return jsonify(
+        return make_response(jsonify(
             total_populate=float(total_populate),
             vaccine_rate_total=float(vaccine_rate_total),
             vaccinate_rate_pcr=float(vaccinate_rate_pcr)
-        )
+        ), 200)
