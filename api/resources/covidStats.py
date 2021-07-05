@@ -72,7 +72,8 @@ class CountryVaccineStats(Resource):
                 people_fully_vaccinated_change=int(people_fully_vaccinated_change)
             ), 200)
         if country == "US":
-            filename = os.path.join(current_app.root_path, 'data', 'us-vaccine.csv')
+            filename = "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/country_data/United%20States.csv"
+            # filename = os.path.join(current_app.root_path, 'data', 'us-vaccine.csv')
             vaccine_data = Path(filename)
             if vaccine_data.is_file():
                 df_vaccine = pd.read_csv(filename)
