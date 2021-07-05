@@ -75,7 +75,7 @@ class CountryVaccineStats(Resource):
             filename = "https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/country_data/United%20States.csv"
             # filename = os.path.join(current_app.root_path, 'data', 'us-vaccine.csv')
             vaccine_data = Path(filename)
-            if vaccine_data.is_file():
+            if True:
                 df_vaccine = pd.read_csv(filename)
                 total_vaccinations = int(df_vaccine.iloc[-1]["total_vaccinations"])
                 people_vaccinated = int(df_vaccine.iloc[-1]["people_vaccinated"])
