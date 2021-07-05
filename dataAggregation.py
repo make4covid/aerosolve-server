@@ -2,7 +2,9 @@ import pandas as pd
 from datetime import date
 from datetime import timedelta
 
+import time
 
+start = time.time()
 
 today_date = (date.today() - timedelta(days=1)).strftime("%Y-%m-%d")
 
@@ -24,6 +26,8 @@ else:
     yesterday_grouped = df[df["date"] == yesterday_date]
     yesterday_grouped.to_csv("data/dataAggregation-" + yesterday_date + ".csv")
 
+end = time.time()
+print(end - start)
 
 # Todo clean csv file. Only keep 4 consecutive days
 
