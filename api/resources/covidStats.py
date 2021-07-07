@@ -21,20 +21,16 @@ def check_nytime_dataset():
         df = pd.read_csv("http://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")
         while days > 0:
             count = 0
+            today_date = (date.today() - timedelta(days=1 + count)).strftime("%Y-%m-%d")
             today_grouped = df[df["date"] == today_date]
-
-            if len(today_grouped) != 0:
-                today_date = (date.today() - timedelta(days=1 + count)).strftime("%Y-%m-%d")
-                today_grouped = df[df["date"] == today_date]
-                today_grouped.to_csv("data/dataAggregation-" + today_date + ".csv")
-                yesterday_date = (date.today() - timedelta(days=2 + count)).strftime("%Y-%m-%d")
-                yesterday_grouped = df[df["date"] == yesterday_date]
-                yesterday_grouped.to_csv("data/dataAggregation-" + yesterday_date + ".csv")
+            today_grouped.to_csv("data/dataAggregation-" + today_date + ".csv")
+            yesterday_date = (date.today() - timedelta(days=2 + count)).strftime("%Y-%m-%d")
+            yesterday_grouped = df[df["date"] == yesterday_date]
+            yesterday_grouped.to_csv("data/dataAggregation-" + yesterday_date + ".csv")
+            if len(today_grouped) != 0 and len(yesterday_grouped) != 0:
                 return None
-            else:
-                count = count + 1
-                today_date = (date.today() - timedelta(days=1 + count)).strftime("%Y-%m-%d")
             days = days - 1
+            count = count + 1
     return None
 
 
