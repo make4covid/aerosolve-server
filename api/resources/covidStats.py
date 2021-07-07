@@ -19,8 +19,8 @@ def check_nytime_dataset():
         return None
     else:
         df = pd.read_csv("http://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")
+        count = 0
         while days > 0:
-            count = 0
             today_date = (date.today() - timedelta(days=1 + count)).strftime("%Y-%m-%d")
             today_grouped = df[df["date"] == today_date]
             today_grouped.to_csv("data/dataAggregation-" + today_date + ".csv")
@@ -31,6 +31,7 @@ def check_nytime_dataset():
                 return None
             days = days - 1
             count = count + 1
+            print("Count:",count)
     return None
 
 
