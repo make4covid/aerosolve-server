@@ -31,7 +31,7 @@ def check_nytime_dataset():
                 return None
             days = days - 1
             count = count + 1
-            print("Count:",count)
+
     return None
 
 
@@ -251,8 +251,8 @@ class CountyCasesStats(Resource):
                 yesterday_grouped = None
                 today_grouped = None
                 days = 10  # Stop after 10 loops
+                count = 0
                 while days > 0:
-                    count = 0
                     today_date = (date.today() - timedelta(days=1 + count)).strftime("%Y-%m-%d")
                     yesterday_date = (date.today() - timedelta(days=2 + count)).strftime("%Y-%m-%d")
                     yesterday_filename = os.path.join(current_app.root_path, 'data',
