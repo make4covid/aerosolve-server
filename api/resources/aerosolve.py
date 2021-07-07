@@ -72,12 +72,13 @@ def set_parameter(object,data):
 
 
 class aerosolve_data(Resource):
+
     def post(self):
         indoor = Indoors()
         data = request.get_json()
         indoor = set_parameter(indoor, data)
-        max_time = indoor.calc_max_time(data["nOfPeople"])
-        max_people = indoor.calc_n_max(data["exp_time"])
+        max_time = round(float(indoor.calc_max_time(data["nOfPeople"])), 2)
+        max_people = round(float(indoor.calc_n_max(data["exp_time"])), 2)
 
         return jsonify({
             "max_hour": max_time # using exp_time_trans
@@ -85,64 +86,3 @@ class aerosolve_data(Resource):
             "max_people": max_people
         })
 
-
-class calc_n_max(Resource):
-    def post(self):
-        indoor = Indoors()
-        data = request.get_json()
-        indoor = set_parameter(indoor, data)
-        return jsonify(math.floor(indoor.calc_n_max(data['exp_time'])))
-
-
-class calc_co2_series(Resource):
-    def post(self):
-        indoor = Indoors()
-        data = request.get_json()
-        set_parameter(indoor, data)
-        df = indoor.calc_co2_series(data['minimum_time'], data['maximum_time'], data['time_step'], data['risk_mode'])
-        return jsonify(df.to_json(orient='records'))
-
-
-class calc_max_time(Resource):
-    def post(self):
-        data = request.get_json()
-        indoor = Indoors()
-        set_parameter(indoor, data)
-        risk_type = "conditional"
-        if "risk_type" in data:
-            risk_type = data["risk_type"]
-        return jsonify(math.floor(indoor.calc_max_time(data['nOfPeople'], risk_type)))
-
-class calc_n_max_series(Resource):
-    def post(self):
-        indoor = Indoors()
-        data = request.get_json()
-        set_parameter(indoor, data)
-        df = indoor.calc_n_max_series(data['minimum_time'], data['maximum_time'], data['time_step'])
-        return jsonify(df.to_json(orient='records'))
-
-class get_six_ft_n(Resource):
-    def post(self):
-        data = request.get_json()
-        indoor = Indoors()
-        set_parameter(indoor, data)
-        return jsonify(indoor.get_six_ft_n())
-class get_n_max(Resource):
-    def post(self):
-        data = request.get_json()
-        indoor = Indoors()
-        set_parameter(indoor, data)
-        return jsonify(indoor.get_n_max())
-
-class merv_to_eff(Resource):
-    def post(self):
-        data = request.get_json()
-        indoor = Indoors()
-        set_parameter(indoor, data)
-        return jsonify(indoor.merv_to_eff(data["merv"],data["def_aerosol_radius"]))
-class calc_n_max_ss(Resource):
-    def post(self):
-        indoor = Indoors()
-        data = request.get_json()
-        set_parameter(indoor, data)
-        return jsonify(math.floor(indoor.calc_n_max_ss(data['exp_time'])))
