@@ -319,8 +319,10 @@ class CountyVaccineStats(Resource):
                 url = ("{}{}".format(url, urlencode(param, quote_via=quote)))
                 r = requests.get(url)
                 data = r.json()[0]
-                total_populate = round(float(
-                    (float(data["series_complete_yes"]) / float(data["series_complete_pop_pct"])) * 100), 2)
+                total_populate = 0
+                if data["series_complete_pop_pct"] != 0:
+                    total_populate = round(float(
+                        (float(data["series_complete_yes"]) / float(data["series_complete_pop_pct"])) * 100), 2)
                 vaccine_rate_total = round(float(data["series_complete_yes"]), 2)
                 vaccinate_rate_pcr = round(float(data["series_complete_pop_pct"]), 2)
                 key = "county " + state + " " + county + " vaccine"
