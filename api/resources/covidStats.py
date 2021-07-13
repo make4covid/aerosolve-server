@@ -99,10 +99,10 @@ class CountryVaccineStats(Resource):
             people_vaccinated_change = float(data[3])
             people_fully_vaccinated_change = float(data[4])
             return make_response(jsonify(
-                total_vaccinations=total_vaccinations,
+                vaccine_rate_total=total_vaccinations,
                 people_vaccinated=people_vaccinated,
                 people_fully_vaccinated=people_fully_vaccinated,
-                people_vaccinated_change=people_vaccinated_change,
+                vaccine_change=people_vaccinated_change,
                 people_fully_vaccinated_change=people_fully_vaccinated_change
             ), 200)
         if country == "US":
@@ -202,7 +202,8 @@ class StateVaccineStats(Resource):
             return make_response(jsonify(
                 total_populate=float(data[0]),
                 vaccine_rate_total=float(data[1]),
-                vaccinate_rate_pcr=float(data[2])
+                vaccinate_rate_pcr=float(data[2]),
+                vaccine_change=float(data[3])
             ), 200)
 
         today_date = (date.today() - timedelta(days=1)).strftime("%Y-%m-%d")
@@ -243,18 +244,22 @@ class StateVaccineStats(Resource):
                 return make_response(jsonify(
                     reason="Division by 0",
                 ), 400)
+            previous_date_vaccine_rate_total = round(float(data.loc[((data["date"] == (datetime.strptime(latest_date,'%Y-%m-%dT%H:%M:%S.%f') + timedelta(days=-1)).strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3]) & (data["recip_county"] != "Unknown County")), "series_complete_yes"].sum()), 2)
+            print(previous_date_vaccine_rate_total)
 
+            vaccine_change = vaccine_rate_total - previous_date_vaccine_rate_total
             key = "state " + state + " vaccine"
-            value = str(total_populate) + " " + str(vaccine_rate_total) + " " + str(vaccinate_rate_pcr)
+            value = str(total_populate) + " " + str(vaccine_rate_total) + " " + str(vaccinate_rate_pcr) + " " + str(vaccine_change)
             cache.set(key, value)
             return make_response(jsonify(
                 total_populate=total_populate,
                 vaccine_rate_total=vaccine_rate_total,
-                vaccinate_rate_pcr=vaccinate_rate_pcr
+                vaccinate_rate_pcr=vaccinate_rate_pcr,
+                vaccine_change=vaccine_change
             ), 200)
 
         except:
-            return makstate_vaccine_statse_response(jsonify(
+            return make_response(jsonify(
                 reason="State is incorrect or there is no data source for this state",
             ), 400)
 
@@ -335,10 +340,12 @@ class CountyVaccineStats(Resource):
             total_populate = float(data[0])
             vaccine_rate_total = float(data[1])
             vaccinate_rate_pcr = float(data[2])
+            vaccine_change = float(data[3])
             return make_response(jsonify(
                 total_populate=total_populate,
                 vaccine_rate_total=vaccine_rate_total,
-                vaccinate_rate_pcr=vaccinate_rate_pcr
+                vaccinate_rate_pcr=vaccinate_rate_pcr,
+                vaccine_change=vaccine_change
             ), 200)
         else:
             try:
@@ -356,19 +363,24 @@ class CountyVaccineStats(Resource):
                         reason="Can't make connect to %s"%url,
                     ), 400)
                 data = r.json()[0]
+
                 total_populate = 0
                 if data["series_complete_pop_pct"] != 0:
                     total_populate = round(float(
                         (float(data["series_complete_yes"]) / float(data["series_complete_pop_pct"])) * 100), 2)
                 vaccine_rate_total = round(float(data["series_complete_yes"]), 2)
                 vaccinate_rate_pcr = round(float(data["series_complete_pop_pct"]), 2)
+                previous_data = r.json()[1]
+                previous_date_vaccine_rate_total = round(float(previous_data["series_complete_yes"]), 2)
+                vaccine_change = vaccine_rate_total - previous_date_vaccine_rate_total
                 key = "county " + state + " " + county + " vaccine"
-                value = str(total_populate) + " " + str(vaccine_rate_total) + " " + str(vaccinate_rate_pcr)
+                value = str(total_populate) + " " + str(vaccine_rate_total) + " " + str(vaccinate_rate_pcr) + " " + str(vaccine_change)
                 cache.set(key, value)
                 return make_response(jsonify(
                     total_populate=total_populate,
                     vaccine_rate_total=vaccine_rate_total,
-                    vaccinate_rate_pcr=vaccinate_rate_pcr
+                    vaccinate_rate_pcr=vaccinate_rate_pcr,
+                    vaccine_change=vaccine_change
                 ), 200)
 
             except:
