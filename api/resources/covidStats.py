@@ -214,12 +214,14 @@ class StateVaccineStats(Resource):
                 'recip_state': state
             }
             url = ("{}{}".format(url, urlencode(param, quote_via=quote)))
+            print(url)
             try:
                 r = requests.get(url)
             except:
                 return make_response(jsonify(
                     reason="Can't make connect to %s" % url,
                 ), 400)
+
             latest_date = []
             try:
                 latest_date = r.json()[0]["date"]
@@ -230,7 +232,7 @@ class StateVaccineStats(Resource):
 
             data = pd.DataFrame(r.json())
             data = data.astype({"series_complete_yes": int, "series_complete_pop_pct": float})
-            vaccine_rate_total = round(float(data.loc[data["date"] == latest_date, "series_complete_yes"].sum()), 2)
+            vaccine_rate_total = round(float(data.loc[((data["date"] == latest_date) & (data["recip_county"] != "Unknown County")), "series_complete_yes"].sum()), 2)
             data["series_complete_yes*series_complete_pop_pct"] = (100 * (data["series_complete_yes"])) / (
             data["series_complete_pop_pct"]).replace({0: np.inf})
             total_populate = round(float(
@@ -252,7 +254,7 @@ class StateVaccineStats(Resource):
             ), 200)
 
         except:
-            return make_response(jsonify(
+            return makstate_vaccine_statse_response(jsonify(
                 reason="State is incorrect or there is no data source for this state",
             ), 400)
 
