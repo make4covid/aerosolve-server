@@ -18,7 +18,11 @@ def check_nytime_dataset():
     if today_file.is_file():
         return None
     else:
-        df = pd.read_csv("http://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")
+        df = []
+        try:
+            df = pd.read_csv("http://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv")
+        except:
+            return None
         count = 0
         while days > 0:
             today_date = (date.today() - timedelta(days=1 + count)).strftime("%Y-%m-%d")
@@ -55,7 +59,12 @@ class CountryCaseStats(Resource):
 
         if country == "US":
             url = "https://api.covidtracking.com/v1/us/daily.json"
-            r = requests.get(url)
+            try:
+                r = requests.get(url)
+            except:
+                return make_response(jsonify(
+                    reason="Can't make connect to %s"%url,
+                ), 400)
             data_today = r.json()[0]
             data_yesterday = r.json()[1]
             tot_cases = round(float(data_today["positive"]), 2)
@@ -73,7 +82,7 @@ class CountryCaseStats(Resource):
             ), 200)
         else:
             return make_response(jsonify(
-                reason="Country is not yet configure",
+                reason="Country is incorrect or there is no data source for this state",
             ), 400)
 
 
@@ -97,7 +106,13 @@ class CountryVaccineStats(Resource):
                 people_fully_vaccinated_change=people_fully_vaccinated_change
             ), 200)
         if country == "US":
-            df_vaccine = pd.read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/country_data/United%20States.csv")
+            df_vaccine = []
+            try:
+                df_vaccine = pd.read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/vaccinations/country_data/United%20States.csv")
+            except:
+                return make_response(jsonify(
+                    reason="Can't make connect to %s" % url,
+                ), 400)
             total_vaccinations = round(float(df_vaccine.iloc[-1]["total_vaccinations"]), 2)
             people_vaccinated = round(float(df_vaccine.iloc[-1]["people_vaccinated"]), 2)
             people_fully_vaccinated = round(float(df_vaccine.iloc[-1]["people_fully_vaccinated"]), 2)
@@ -120,7 +135,7 @@ class CountryVaccineStats(Resource):
 
         else:
             return make_response(jsonify(
-                reason="The requested country is not yet configured",
+                reason="Country is incorrect or there is no data source for this state",
             ), 400)
 
 
@@ -148,7 +163,12 @@ class StateCaseStats(Resource):
                 'state': state
             }
             url = ("{}{}".format(url, urlencode(param, quote_via=quote)))
-            r = requests.get(url)
+            try:
+                r = requests.get(url)
+            except:
+                return make_response(jsonify(
+                    reason="Can't make connect to %s" % url,
+                ), 400)
             data = (sorted(r.json(), key=lambda x: x["submission_date"], reverse=True))[0]
             tot_cases = round(float(data["tot_cases"]), 2)
             new_case = round(float(data["new_case"]), 2)
@@ -164,9 +184,9 @@ class StateCaseStats(Resource):
                 new_death=new_death,
             ), 200)
 
-        except ValueError:
+        except:
             return make_response(jsonify(
-                reason="No data source available",
+                reason="State is incorrect or there is no data source for this state",
             ), 400)
 
 
@@ -194,8 +214,20 @@ class StateVaccineStats(Resource):
                 'recip_state': state
             }
             url = ("{}{}".format(url, urlencode(param, quote_via=quote)))
-            r = requests.get(url)
-            latest_date = r.json()[0]["date"]
+            try:
+                r = requests.get(url)
+            except:
+                return make_response(jsonify(
+                    reason="Can't make connect to %s" % url,
+                ), 400)
+            latest_date = []
+            try:
+                latest_date = r.json()[0]["date"]
+            except:
+                return make_response(jsonify(
+                    reason="State is incorrect or there is no data source for this state",
+                ), 400)
+
             data = pd.DataFrame(r.json())
             data = data.astype({"series_complete_yes": int, "series_complete_pop_pct": float})
             vaccine_rate_total = round(float(data.loc[data["date"] == latest_date, "series_complete_yes"].sum()), 2)
@@ -205,7 +237,7 @@ class StateVaccineStats(Resource):
                 data.loc[data["date"] == latest_date, "series_complete_yes*series_complete_pop_pct"].sum()), 2)
             try:
                 vaccinate_rate_pcr = round(float((vaccine_rate_total / total_populate) * 100), 2)
-            except ValueError:
+            except:
                 return make_response(jsonify(
                     reason="Division by 0",
                 ), 400)
@@ -219,9 +251,9 @@ class StateVaccineStats(Resource):
                 vaccinate_rate_pcr=vaccinate_rate_pcr
             ), 200)
 
-        except ValueError:
+        except:
             return make_response(jsonify(
-                reason="Some thing wrong with the data source",
+                reason="State is incorrect or there is no data source for this state",
             ), 400)
 
 
@@ -266,7 +298,6 @@ class CountyCasesStats(Resource):
                         yesterday_grouped = pd.read_csv(yesterday_filename)
                     days = days - 1
                     count = count + 1
-
                 today_ = today_grouped[(today_grouped["state"] == state) & (today_grouped["county"] == county)]
                 yesterday_ = yesterday_grouped[(yesterday_grouped["state"] == state) &
                                                (yesterday_grouped["county"] == county)]
@@ -283,10 +314,9 @@ class CountyCasesStats(Resource):
                     newCase=new_case,
                     newDeath=new_death,
                 ), 200)
-
-            except ValueError:
+            except:
                 return make_response(jsonify(
-                    reason="Some thing wrong with the data source",
+                    reason="County is incorrect or there is no data source for this state",
                 ), 400)
 
 
@@ -317,7 +347,12 @@ class CountyVaccineStats(Resource):
                     'recip_county': county + " County"
                 }
                 url = ("{}{}".format(url, urlencode(param, quote_via=quote)))
-                r = requests.get(url)
+                try:
+                    r = requests.get(url)
+                except:
+                    return make_response(jsonify(
+                        reason="Can't make connect to %s"%url,
+                    ), 400)
                 data = r.json()[0]
                 total_populate = 0
                 if data["series_complete_pop_pct"] != 0:
@@ -334,7 +369,7 @@ class CountyVaccineStats(Resource):
                     vaccinate_rate_pcr=vaccinate_rate_pcr
                 ), 200)
 
-            except ValueError:
+            except:
                 return make_response(jsonify(
-                    reason="Some thing wrong with the data source",
+                    reason="County is incorrect or there is no data source for this state",
                 ), 400)
