@@ -36,3 +36,6 @@ source aerosolve-server/bin/activate<br/>
 pip install -r requirements.txt<br/>
 **To run the application**<br/>
 python app.py
+
+
+Travis*
