@@ -233,7 +233,7 @@ class StateVaccineStats(Resource):
 
             data = pd.DataFrame(r.json())
             data = data.astype({"series_complete_yes": int, "series_complete_pop_pct": float})
-            vaccine_rate_total = round(float(data.loc[((data["date"] == latest_date) & (data["recip_county"] != "Unknown County")), "series_complete_yes"].sum()), 2)
+            vaccine_rate_total = round(float(data.loc[data["date"] == latest_date, "series_complete_yes"].sum()), 2)
             data["series_complete_yes*series_complete_pop_pct"] = (100 * (data["series_complete_yes"])) / (
             data["series_complete_pop_pct"]).replace({0: np.inf})
             total_populate = round(float(
@@ -373,6 +373,7 @@ class CountyVaccineStats(Resource):
                 previous_data = r.json()[1]
                 previous_date_vaccine_rate_total = round(float(previous_data["series_complete_yes"]), 2)
                 vaccine_change = vaccine_rate_total - previous_date_vaccine_rate_total
+
                 key = "county " + state + " " + county + " vaccine"
                 value = str(total_populate) + " " + str(vaccine_rate_total) + " " + str(vaccinate_rate_pcr) + " " + str(vaccine_change)
                 cache.set(key, value)
