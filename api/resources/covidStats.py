@@ -58,19 +58,11 @@ class CountryCaseStats(Resource):
             ), 200)
 
         if country == "US":
-            url = "https://api.covidtracking.com/v1/us/daily.json"
-            try:
-                r = requests.get(url)
-            except:
-                return make_response(jsonify(
-                    reason="Can't make connect to %s"%url,
-                ), 400)
-            data_today = r.json()[0]
-            data_yesterday = r.json()[1]
-            tot_cases = round(float(data_today["positive"]), 2)
-            new_case = round(float(data_today["positive"] - data_yesterday["positive"]), 2)
-            tot_death = round(float(data_today["death"]), 2)
-            new_death = round(float(data_today["death"] - data_yesterday["death"]), 2)
+            df = pd.read_csv("https://raw.githubusercontent.com/nytimes/covid-19-data/master/us.csv")
+            tot_cases = round(df["cases"].iloc[-1], 2)
+            new_case = round(df["cases"].iloc[-1] - df["cases"].iloc[-2], 2)
+            tot_death = round(df["deaths"].iloc[-1], 2)
+            new_death = round(df["deaths"].iloc[-1] - df["deaths"].iloc[-2], 2)
             key = "country " + country + " cases"
             value = str(tot_cases) + " " + str(new_case) + " " + str(tot_death) + " " + str(new_death)
             cache.set(key, value)

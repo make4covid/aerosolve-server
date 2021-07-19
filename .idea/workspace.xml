@@ -31,7 +31,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Semi_Supervised_Learning" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\PyCharm 2020.1.1\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
   </component>
@@ -114,6 +114,9 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="StructureViewFactory">
+    <option name="AUTOSCROLL_MODE" value="false" />
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -155,7 +158,10 @@
       <workItem from="1625520781857" duration="1674000" />
       <workItem from="1625623026368" duration="7612000" />
       <workItem from="1626137975712" duration="2247000" />
-      <workItem from="1626318771025" duration="81000" />
+      <workItem from="1626318771025" duration="854000" />
+      <workItem from="1626321077528" duration="107000" />
+      <workItem from="1626378918185" duration="15000" />
+      <workItem from="1626672789007" duration="1228000" />
     </task>
     <servers />
   </component>
@@ -192,10 +198,10 @@
     </state>
     <state x="446" y="0" key="#test_cases/0.0.1280.720@0.0.1280.720" timestamp="1626144778327" />
     <state x="669" y="115" key="#test_cases/0.0.1920.1040/1920.0.1080.1880@0.0.1920.1040" timestamp="1625352633440" />
-    <state x="740" y="264" key="FileChooserDialogImpl" timestamp="1626212900380">
+    <state x="740" y="264" key="FileChooserDialogImpl" timestamp="1626378931847">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="264" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1080.1880@0.0.1920.1040" timestamp="1626212900380" />
+    <state x="740" y="264" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1080.1880@0.0.1920.1040" timestamp="1626378931847" />
     <state x="2336" y="477" key="FileChooserDialogImpl/0.0.1920.1040/1920.0.1080.1880@1920.0.1080.1880" timestamp="1625328800101" />
     <state width="1877" height="336" key="GridCell.Tab.0.bottom" timestamp="1625429890238">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -218,10 +224,10 @@
     </state>
     <state x="73" y="324" key="SettingsEditor/0.0.1920.1040/1920.0.1080.1880@0.0.1920.1040" timestamp="1625352734512" />
     <state x="1961" y="585" key="SettingsEditor/0.0.1920.1040/1920.0.1080.1880@1920.0.1080.1880" timestamp="1624488102541" />
-    <state x="310" y="86" width="1096" height="812" key="dock-window-1" timestamp="1626318852066">
+    <state x="699" y="56" width="1096" height="812" key="dock-window-1" timestamp="1626673075707">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="310" y="86" width="1096" height="812" key="dock-window-1/0.0.1920.1040/1920.0.1080.1880@0.0.1920.1040" timestamp="1626318852066" />
+    <state x="699" y="56" width="1096" height="812" key="dock-window-1/0.0.1920.1040/1920.0.1080.1880@0.0.1920.1040" timestamp="1626673075707" />
     <state x="518" y="99" width="1096" height="812" maximized="true" key="dock-window-1/0.0.1920.1040/1920.0.1080.1880@1920.0.1080.1880" timestamp="1626187483081" />
     <state x="660" y="88" width="585" height="619" key="find.popup" timestamp="1626203144655">
       <screen x="0" y="0" width="1920" height="1040" />
