@@ -66,11 +66,12 @@ class CountryCaseStats(Resource):
             key = "country " + country + " cases"
             value = str(tot_cases) + " " + str(new_case) + " " + str(tot_death) + " " + str(new_death)
             cache.set(key, value)
+
             return make_response(jsonify(
-                tot_cases=tot_cases,
-                new_case=new_case,
-                tot_death=tot_death,
-                new_death=new_death,
+                tot_cases=int(tot_cases),
+                new_case=int(new_case),
+                tot_death=int(tot_death),
+                new_death=int(new_death),
             ), 200)
         else:
             return make_response(jsonify(
