@@ -209,7 +209,6 @@ class StateVaccineStats(Resource):
                 'recip_state': state
             }
             url = ("{}{}".format(url, urlencode(param, quote_via=quote)))
-            print(url)
             try:
                 r = requests.get(url)
             except:

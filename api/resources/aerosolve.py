@@ -78,7 +78,6 @@ class aerosolve_data(Resource):
         indoor = Indoors()
         data = request.get_json()
         indoor = set_parameter(indoor, data)
-        indoor.calc_vars()
         max_time = round(float(indoor.calc_max_time(data["nOfPeople"])), 2)
         max_people = round(float(indoor.calc_n_max(data["exp_time"])), 2)
 

@@ -5,7 +5,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/resources/aerosolve.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/resources/aerosolve.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/resources/covidStats.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/resources/covidStats.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/Indoor.py" beforeDir="false" afterPath="$PROJECT_DIR$/model/Indoor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,7 +165,7 @@
       <workItem from="1626672789007" duration="1602000" />
       <workItem from="1626709858074" duration="604000" />
       <workItem from="1626715022511" duration="157000" />
-      <workItem from="1626896143227" duration="3163000" />
+      <workItem from="1626896143227" duration="3435000" />
     </task>
     <servers />
   </component>
