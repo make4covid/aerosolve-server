@@ -14,6 +14,7 @@ def set_parameter(object,data):
         physical_params[1] = data["mean_ceiling_height"]
     if "air_exchange_rate" and "recirc_rate" in data:
         air_exchange_rate = data["air_exchange_rate"]
+        physical_params[2] = air_exchange_rate
         outdoor_air_fraction = air_exchange_rate / (air_exchange_rate + data["recirc_rate"])
         physical_params[3] = outdoor_air_fraction
     if "def_aerosol_radius" and "merv" in data:
@@ -77,6 +78,7 @@ class aerosolve_data(Resource):
         indoor = Indoors()
         data = request.get_json()
         indoor = set_parameter(indoor, data)
+        indoor.calc_vars()
         max_time = round(float(indoor.calc_max_time(data["nOfPeople"])), 2)
         max_people = round(float(indoor.calc_n_max(data["exp_time"])), 2)
 

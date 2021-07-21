@@ -111,7 +111,6 @@ class Indoors:
         mean_ceiling_height_m = mean_ceiling_height * 0.3048
         self.room_vol = floor_area * mean_ceiling_height  # ft3
         room_vol_m = 0.0283168 * self.room_vol  # m3
-
         self.fresh_rate = self.room_vol * air_exch_rate / 60  # ft3/min
         self.recirc_rate = self.fresh_rate * (1/primary_outdoor_air_fraction - 1)  # ft3/min
         self.air_filt_rate = aerosol_filtration_eff * self.recirc_rate * 60 / self.room_vol  # /hr
